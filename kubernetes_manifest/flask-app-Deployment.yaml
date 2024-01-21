@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: demo-app
+  labels:
+    app: demo-app
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: demo
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: demo
+        version: v1
+    spec:
+      # serviceAccountName: bookinfo-productpage
+      containers:
+      - name: demo
+        image: khaingwyuthmone/flask-app
+        imagePullPolicy: IfNotPresent
+        args:
+        - listen:8080
+        env:
+        - name: batch
+          value: cohort-5
