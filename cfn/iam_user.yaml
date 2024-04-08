@@ -1,0 +1,61 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation template to create an IAM user with ECR permissions
+
+Parameters:
+  UserName:
+    Type: String
+    Description: IAM user with permission to pull and push images to ECR
+
+Resources:
+  IAMUser:
+    Type: AWS::IAM::User
+    Properties:
+      UserName: !Ref UserName
+
+  IAMUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      UserName: !Ref IAMUser
+
+  ECRUserPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: ECRUserPolicy
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - ecr:GetAuthorizationToken
+            Resource: '*'
+
+          - Effect: Allow
+            Action:
+              - ecr:BatchCheckLayerAvailability
+              - ecr:GetDownloadUrlForLayer
+              - ecr:BatchGetImage
+              - ecr:InitiateLayerUpload
+              - ecr:UploadLayerPart
+              - ecr:CompleteLayerUpload
+              - ecr:PutImage
+            Resource: '*'
+
+      Users:
+        - !Ref IAMUser
+
+Outputs:
+  IAMUserName:
+    Description: Name of the created IAM user
+    Value: !Ref UserName
+
+  IAMUserAccessKeyId:
+    Description: Access Key ID of the created IAM user
+    Value: !Ref IAMUserAccessKey
+    Export:
+      Name: !Sub "${AWS::StackName}-IAMUserAccessKeyId"
+
+  IAMUserSecretAccessKey:
+    Description: Secret Access Key of the created IAM user
+    Value: !GetAtt IAMUserAccessKey.SecretAccessKey
+    Export:
+      Name: !Sub "${AWS::StackName}-IAMUserSecretAccessKey"

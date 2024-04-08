@@ -1,0 +1,19 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CloudFormation template to create a key pair and use it while creating EC2 instance
+Resources:
+  EC2KeyPair:
+    Type: 'AWS::EC2::KeyPair'
+    Properties:
+      KeyName: EC2KeyPair
+      KeyType: rsa
+      KeyFormat : pem
+
+  EC2Instance:
+    Type: 'AWS::EC2::Instance'
+    Properties:
+      InstanceType: 't2.micro'
+      AvailabilityZone: 'ap-southeast-1a'
+      ImageId: 'ami-0583d7071133f140e'
+      KeyName: EC2KeyPair
+      SecurityGroups:
+        - "launch-wizard-1"

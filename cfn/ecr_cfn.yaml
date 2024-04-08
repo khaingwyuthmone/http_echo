@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS CloudFormation template to create a private Amazon ECR repository
+
+Parameters:
+  RepositoryName:
+    Type: String
+    Description: Testing ECR registry
+
+Resources:
+  ECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: !Ref RepositoryName
+
+  # ECRRepositoryPolicy:
+  #   Type: AWS::ECR::RegistryPolicy
+  #   Properties:
+  #     RepositoryName: !Ref RepositoryName
+  #     PolicyDocument:
+  #       Version: '2012-10-17'
+  #       Statement:
+  #         - Effect: Allow
+  #           Principal:
+  #             Service: !Sub "ecr.${AWS::Region}.amazonaws.com"
+  #           Action:
+  #             - ecr:GetDownloadUrlForLayer
+  #             - ecr:BatchGetImage
+  #             - ecr:BatchCheckLayerAvailability
+  #             - ecr:PutImage
+  #             - ecr:InitiateLayerUpload
+  #             - ecr:UploadLayerPart
+  #             - ecr:CompleteLayerUpload
+  #           Resource: !Sub "arn:aws:ecr:${AWS::Region}:${AWS::AccountId}:repository/${RepositoryName}"
+
+Outputs:
+  ECRRepositoryArn:
+    Description: ARN of the created ECR repository
+    Value: !GetAtt ECRRepository.Arn
